@@ -10,6 +10,7 @@ TagManager:
   - ForceCircle
   - StickAble
   - Lava
+  - StickPoint
   layers:
   - Default
   - TransparentFX

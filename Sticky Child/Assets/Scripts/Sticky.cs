@@ -49,23 +49,11 @@ public class Sticky : MonoBehaviour
     {
         if (stickedObject != null)
         {
-            stickedObject.rigidbody.simulated = false;
-            stickedObject.otherCollider.enabled = false;
-            Invoke("resetStickedObject", 0.5f);
+            stickedObject.gameObject.GetComponent<StickyObject>().onJump();
+            stickedObject = null;
             releaseJoint();
         }
     }
-
-    private void resetStickedObject()
-    {
-        if (stickedObject != null)
-        {
-            stickedObject.rigidbody.simulated = true;
-            stickedObject.otherCollider.enabled = true;
-        }
-        stickedObject = null;
-    }
-
 
     private void letPlayerJump()
     {
