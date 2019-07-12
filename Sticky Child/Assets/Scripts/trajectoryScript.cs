@@ -8,12 +8,12 @@ public class trajectoryScript : MonoBehaviour
 {
 
     public Sprite dotSprite;                    //All of the dots will become the sprite assigned to this if this has a sprite assigned to it and changeSpriteAfterStart is true
-    public bool changeSpriteAfterStart;         //When enabled, you will be able to change the above in the update loop. (it's less efficient)
-    public float initialDotSize;                //The intial size of the trajectoryDots gameobject
-    public int numberOfDots;                    //The number of points representing the trajectory
-    public float dotSeparation;                 //The space between the points representing the trajectory
-    public float dotShift;                      //How far the first dot is from the "ball"
-    public float idleTime;                      //How long the player has to be inactive for the Help Gesture to begin animating
+    public bool changeSpriteAfterStart = true;         //When enabled, you will be able to change the above in the update loop. (it's less efficient)
+    public float initialDotSize = 1.5f;                //The intial size of the trajectoryDots gameobject
+    public int numberOfDots = 7;                    //The number of points representing the trajectory
+    public float dotSeparation = 0.2f;                 //The space between the points representing the trajectory
+    public float dotShift = 0.2f;                      //How far the first dot is from the "ball"
+    public float idleTime = 5;                      //How long the player has to be inactive for the Help Gesture to begin animating
     private GameObject trajectoryDots;          //The parent of all the points representing the trajectory
     private GameObject ball;                    //The projectile the player will be shooting
     private Rigidbody2D ballRB;                 //The Rigidbody2D attached to the projectile the player will be shooting
@@ -27,9 +27,9 @@ public class trajectoryScript : MonoBehaviour
     private bool ballIsClicked = false;         //If the cursor is hovering over the "Ball Click Area"
     private bool ballIsClicked2 = false;        //If the finger/cursor is pressing down in the "Ball Click Area" to activate the shot
     private GameObject ballClick;               //The area which the player needs to click in to activate a shot
-    public float shootingPowerX;                //The amount of power which can be applied in the X direction
-    public float shootingPowerY;                //The amount of power which can be applied in the Y direction
-    public bool usingHelpGesture;               //If you want to use the Help Gesture
+    public float shootingPowerX = 30;                //The amount of power which can be applied in the X direction
+    public float shootingPowerY = 20;                //The amount of power which can be applied in the Y direction
+    public bool usingHelpGesture =true;               //If you want to use the Help Gesture
     public bool explodeEnabled;                 //If you want to do something when the projectile reaches the last point of the trajectory
     public bool grabWhileMoving;                //Off means the player won't be able to shoot until the "ball" is still. On means they can stop the "ball" by clicking on it and shoot
     public GameObject[] dots;                   //The array of points that make up the trajectory
@@ -38,9 +38,14 @@ public class trajectoryScript : MonoBehaviour
     [SerializeField] List<GameObject> stickyPoints = new List<GameObject>();
     GameObject stickedObject;
     private float speedLimit = 1f;
-    [SerializeField] bool canJump;
-    [SerializeField] bool doubleJump;
-    [SerializeField] int jumpCount = 0;
+    [SerializeField] bool canMultiJump = false;
+    [SerializeField] int maxMultiJump = 2;
+
+    bool canJump;
+    bool doubleJump;
+    int jumpCount = 0;
+
+
 
     void Start()
     {
@@ -169,7 +174,7 @@ public class trajectoryScript : MonoBehaviour
     {
         canJump = true;
         jumpCount = 0;
-        doubleJump = true;
+        doubleJump = canMultiJump;
         ballRB.velocity = new Vector2(0f, 0f);                          //The "ball" stops moving
     }
 
@@ -300,9 +305,9 @@ public class trajectoryScript : MonoBehaviour
             trajectoryDots.SetActive(false);                                //The trajectory will hide
             ballRB.velocity = new Vector2(shotForce.x, shotForce.y);    //The "ball" will have its new velocity
             jumpCount++;
-            if (jumpCount < 2)
+            if (jumpCount < maxMultiJump)
             {
-                doubleJump = true;
+                doubleJump = canMultiJump;
             }
             else
             {
